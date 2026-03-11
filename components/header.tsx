@@ -3,9 +3,10 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
-import { Menu, X, Youtube, Instagram, ChevronDown, LogIn, LogOut } from "lucide-react"
+import { Menu, X, Youtube, Instagram, ChevronDown, LogIn, LogOut, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAdmin } from "@/hooks/use-admin"
+import { useTheme } from "next-themes"
 
 const navCategories = [
   {
@@ -61,6 +62,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const { isAdmin, logout } = useAdmin()
+  const { theme, setTheme } = useTheme()
 
   return (
     <>
@@ -129,6 +131,16 @@ export function Header() {
                 <span className="sr-only">Instagram</span>
               </Link>
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden sm:flex h-10 w-10"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">{"테마 변경"}</span>
+            </Button>
             {isAdmin ? (
               <Button
                 variant="ghost"
@@ -187,7 +199,7 @@ export function Header() {
                 </div>
               ))}
               <div className="flex items-center justify-between pt-4 border-t border-border mt-3 px-3">
-                <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-4">
                   <Link href="https://www.youtube.com/@kpcu8086" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-foreground" onClick={() => setMobileOpen(false)}>
                     <Youtube className="h-6 w-6" />
                     <span className="text-sm">YouTube</span>
@@ -196,6 +208,13 @@ export function Header() {
                     <Instagram className="h-6 w-6" />
                     <span className="text-sm">Instagram</span>
                   </Link>
+                  <button
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    className="flex items-center gap-2 text-foreground"
+                  >
+                    {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                    <span className="text-sm">{theme === "dark" ? "라이트 모드" : "다크 모드"}</span>
+                  </button>
                 </div>
                 {isAdmin ? (
                   <button
