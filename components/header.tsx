@@ -63,109 +63,111 @@ export function Header() {
   const { isAdmin, logout } = useAdmin()
 
   return (
-    <header className="sticky top-0 z-[60] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 md:h-20 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
-          <Image
-            src="/icon.png"
-            alt="유타한인장로교회 로고"
-            width={44}
-            height={44}
-            className="h-8 w-8 md:h-11 md:w-11"
-          />
-          <div>
-            <span className="font-bold text-base sm:text-lg md:text-2xl block leading-tight">유타한인장로교회</span>
-            <span className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-none hidden sm:block">Korean Presbyterian Church of Utah</span>
-          </div>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {navCategories.map((cat) => (
-            <div
-              key={cat.name}
-              className="relative"
-              onMouseEnter={() => setOpenDropdown(cat.name)}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <button
-                className="flex items-center gap-1 px-4 py-2.5 text-base font-medium text-foreground/80 hover:text-primary transition-colors rounded-md hover:bg-muted"
-                type="button"
-              >
-                {cat.name}
-                <ChevronDown className="h-4 w-4" />
-              </button>
-              {openDropdown === cat.name && (
-                <div className="absolute top-full left-0 pt-1 min-w-[180px] z-50">
-                  <div className="bg-card border border-border rounded-lg shadow-lg py-1">
-                    {cat.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+    <>
+      <header className="sticky top-0 z-[60] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 md:h-20 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
+            <Image
+              src="/icon.png"
+              alt="유타한인장로교회 로고"
+              width={44}
+              height={44}
+              className="h-8 w-8 md:h-11 md:w-11"
+            />
+            <div>
+              <span className="font-bold text-base sm:text-lg md:text-2xl block leading-tight">유타한인장로교회</span>
+              <span className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-none hidden sm:block">Korean Presbyterian Church of Utah</span>
             </div>
-          ))}
-        </nav>
+          </Link>
 
-        {/* Social + Mobile Toggle */}
-        <div className="flex items-center space-x-1">
-          <Button variant="ghost" size="icon" asChild className="hidden sm:flex h-10 w-10">
-            <Link href="https://www.youtube.com/@kpcu8086" target="_blank" rel="noopener noreferrer">
-              <Youtube className="h-6 w-6" />
-              <span className="sr-only">YouTube</span>
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" asChild className="hidden sm:flex h-10 w-10">
-            <Link href="https://www.instagram.com/kpcucollege/" target="_blank" rel="noopener noreferrer">
-              <Instagram className="h-6 w-6" />
-              <span className="sr-only">Instagram</span>
-            </Link>
-          </Button>
-          {isAdmin ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden sm:flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
-              onClick={async () => { await logout(); window.location.reload() }}
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="text-xs">{"로그아웃"}</span>
-            </Button>
-          ) : (
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navCategories.map((cat) => (
+              <div
+                key={cat.name}
+                className="relative"
+                onMouseEnter={() => setOpenDropdown(cat.name)}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <button
+                  className="flex items-center gap-1 px-4 py-2.5 text-base font-medium text-foreground/80 hover:text-primary transition-colors rounded-md hover:bg-muted"
+                  type="button"
+                >
+                  {cat.name}
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+                {openDropdown === cat.name && (
+                  <div className="absolute top-full left-0 pt-1 min-w-[180px] z-50">
+                    <div className="bg-card border border-border rounded-lg shadow-lg py-1">
+                      {cat.items.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Social + Mobile Toggle */}
+          <div className="flex items-center space-x-1">
             <Button variant="ghost" size="icon" asChild className="hidden sm:flex h-10 w-10">
-              <Link href="/admin/login">
-                <LogIn className="h-5 w-5 text-muted-foreground" />
-                <span className="sr-only">{"관리자 로그인"}</span>
+              <Link href="https://www.youtube.com/@kpcu8086" target="_blank" rel="noopener noreferrer">
+                <Youtube className="h-6 w-6" />
+                <span className="sr-only">YouTube</span>
               </Link>
             </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden relative z-[100]"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            <span className="sr-only">Menu</span>
-          </Button>
+            <Button variant="ghost" size="icon" asChild className="hidden sm:flex h-10 w-10">
+              <Link href="https://www.instagram.com/kpcucollege/" target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-6 w-6" />
+                <span className="sr-only">Instagram</span>
+              </Link>
+            </Button>
+            {isAdmin ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden sm:flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={async () => { await logout(); window.location.reload() }}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-xs">{"로그아웃"}</span>
+              </Button>
+            ) : (
+              <Button variant="ghost" size="icon" asChild className="hidden sm:flex h-10 w-10">
+                <Link href="/admin/login">
+                  <LogIn className="h-5 w-5 text-muted-foreground" />
+                  <span className="sr-only">{"관리자 로그인"}</span>
+                </Link>
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden relative z-[9999]"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <span className="sr-only">Menu</span>
+            </Button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Rendered outside header to avoid sticky positioning issues */}
       {mobileOpen && (
-        <>
-          <div
-            className="lg:hidden fixed inset-0 top-14 z-[70] bg-black/30"
+        <div className="lg:hidden fixed inset-0 top-14 z-[9998]">
+          <div 
+            className="absolute inset-0 bg-black/30"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="lg:hidden fixed left-0 right-0 top-14 bottom-0 z-[80] bg-background overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
+          <div className="absolute inset-0 bg-background overflow-y-auto">
             <nav className="px-4 py-5 pb-20 space-y-1">
               {navCategories.map((cat) => (
                 <div key={cat.name} className="mb-3">
@@ -216,8 +218,8 @@ export function Header() {
               </div>
             </nav>
           </div>
-        </>
+        </div>
       )}
-    </header>
+    </>
   )
 }
