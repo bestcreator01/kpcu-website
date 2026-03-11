@@ -62,6 +62,8 @@ export function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const { isAdmin, logout } = useAdmin()
 
+  console.log("[v0] Header render - mobileOpen:", mobileOpen)
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 md:h-20 items-center justify-between">
@@ -150,7 +152,10 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() => {
+              console.log("[v0] Menu button clicked, current state:", mobileOpen, "-> new state:", !mobileOpen)
+              setMobileOpen(!mobileOpen)
+            }}
           >
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             <span className="sr-only">Menu</span>
