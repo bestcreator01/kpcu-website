@@ -199,9 +199,6 @@ The app uses a simple single-user authentication system:
 4. **Verification**: API routes verify the token using `isAuthenticated()` helper
 5. **Client Check**: `useAdmin()` hook checks auth status via `/api/auth/check`
 
-### Admin Credentials
-- **ID**: `kpcu`
-- **Password**: `kpcu2026#$!`
 
 ## Date Handling
 
