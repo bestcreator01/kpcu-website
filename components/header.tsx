@@ -162,10 +162,10 @@ export function Header() {
       {mobileOpen && (
         <>
           <div
-            className="lg:hidden fixed inset-0 top-0 z-40 bg-black/30"
+            className="lg:hidden fixed inset-0 top-14 z-40 bg-black/30"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="lg:hidden fixed left-0 right-0 top-14 bottom-0 z-50 bg-background overflow-y-auto overscroll-contain -webkit-overflow-scrolling-touch">
+          <div className="lg:hidden fixed left-0 right-0 top-14 bottom-0 z-50 bg-background overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
             <nav className="px-4 py-5 pb-20 space-y-1">
               {navCategories.map((cat) => (
                 <div key={cat.name} className="mb-3">
