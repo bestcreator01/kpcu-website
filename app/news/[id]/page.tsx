@@ -54,13 +54,13 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             {announcements.map((item, index) => (
               <div key={index} className="px-5 py-4 border-b border-border last:border-b-0">
                 <div className="flex items-start gap-3">
-                  <span className="text-sm font-bold text-primary flex-shrink-0 mt-0.5">{index + 1}.</span>
-                  <div className="space-y-1.5 flex-1">
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{item.text}</p>
+                  <span className="text-base font-bold text-primary flex-shrink-0 mt-0.5">{index + 1}.</span>
+                  <div className="space-y-2 flex-1">
+                    <p className="text-base text-foreground leading-relaxed whitespace-pre-wrap">{item.text}</p>
                     {item.details.length > 0 && (
-                      <ul className="space-y-1 ml-1">
+                      <ul className="space-y-1.5 ml-1">
                         {item.details.map((detail, dIdx) => (
-                          <li key={dIdx} className="text-xs text-muted-foreground leading-relaxed flex items-start gap-1.5">
+                          <li key={dIdx} className="text-sm text-muted-foreground leading-relaxed flex items-start gap-1.5">
                             <span className="flex-shrink-0 mt-0.5">{"- "}</span>
                             <span>{detail}</span>
                           </li>
