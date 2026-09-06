@@ -13,9 +13,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   if (!(await isAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   const { id } = await params
   const body = await request.json()
-  const { title, date, announcements, bible_reading } = body
+  const { title, date, announcements, bible_reading, bulletin_images } = body
   const result = await sql`
-    UPDATE church_news SET title = ${title}, date = ${date}, announcements = ${JSON.stringify(announcements)}, bible_reading = ${bible_reading || null} WHERE id = ${Number(id)} RETURNING *
+    UPDATE church_news SET title = ${title}, date = ${date}, announcements = ${JSON.stringify(announcements)}, bible_reading = ${bible_reading || null}, bulletin_images = ${JSON.stringify(bulletin_images || [])} WHERE id = ${Number(id)} RETURNING *
   `
   return NextResponse.json(result[0])
 }

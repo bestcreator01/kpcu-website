@@ -1,14 +1,23 @@
 import { SubPageLayout } from "@/components/sub-page-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, BookOpen } from "lucide-react"
+import { ArrowLeft, BookOpen, FileText, Newspaper } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { sql } from "@/lib/db"
 import { notFound } from "next/navigation"
 import { formatDateKorean } from "@/lib/date"
 
+export const dynamic = "force-dynamic"
+
 type Announcement = {
   text: string
   details: string[]
+}
+
+type BulletinImage = {
+  url: string
+  type: "image" | "pdf"
+  name: string
 }
 
 function normalizeAnnouncements(raw: Announcement[] | string[] | string): Announcement[] {
@@ -16,6 +25,12 @@ function normalizeAnnouncements(raw: Announcement[] | string[] | string): Announ
   return parsed.map((a: string | Announcement) =>
     typeof a === "string" ? { text: a, details: [] } : { text: a.text || "", details: a.details || [] }
   )
+}
+
+function normalizeBulletins(raw: BulletinImage[] | string | undefined | null): BulletinImage[] {
+  if (!raw) return []
+  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
+  return Array.isArray(parsed) ? parsed : []
 }
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -28,6 +43,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
   const news = result[0]
   const announcements = normalizeAnnouncements(news.announcements)
+  const bulletins = normalizeBulletins(news.bulletin_images)
 
   return (
     <SubPageLayout category="커뮤니티" title="교회 소식">
@@ -87,6 +103,48 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
               <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{news.bible_reading}</p>
             </CardContent>
           </Card>
+        )}
+
+        {/* Bulletin (주보) */}
+        {bulletins.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+              <Newspaper className="h-5 w-5 text-primary" />
+              {"주보"}
+            </h3>
+            <div className="space-y-4">
+              {bulletins.map((b, i) => (
+                b.type === "image" ? (
+                  <div key={i} className="relative w-full overflow-hidden rounded-lg border border-border bg-muted">
+                    <Image
+                      src={b.url}
+                      alt={`주보 ${i + 1}`}
+                      width={1200}
+                      height={1600}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div key={i} className="rounded-lg border border-border overflow-hidden">
+                    <iframe
+                      src={b.url}
+                      className="w-full h-[600px] bg-muted"
+                      title={`주보 PDF ${i + 1}`}
+                    />
+                    <a
+                      href={b.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-primary hover:bg-muted transition-colors border-t border-border"
+                    >
+                      <FileText className="h-4 w-4" />
+                      {"주보 PDF 새 탭에서 열기"}
+                    </a>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </SubPageLayout>

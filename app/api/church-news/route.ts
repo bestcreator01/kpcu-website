@@ -20,11 +20,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   if (!(await isAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   const body = await request.json()
-  const { title, date, announcements, bible_reading } = body
+  const { title, date, announcements, bible_reading, bulletin_images } = body
 
   const result = await sql`
-    INSERT INTO church_news (title, date, announcements, bible_reading)
-    VALUES (${title}, ${date}, ${JSON.stringify(announcements)}, ${bible_reading || null})
+    INSERT INTO church_news (title, date, announcements, bible_reading, bulletin_images)
+    VALUES (${title}, ${date}, ${JSON.stringify(announcements)}, ${bible_reading || null}, ${JSON.stringify(bulletin_images || [])})
     RETURNING *
   `
   return NextResponse.json(result[0], { status: 201 })

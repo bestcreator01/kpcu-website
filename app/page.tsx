@@ -8,6 +8,8 @@ import { HomeNewsPreview } from "@/components/home-news-preview"
 import { MapSection } from "@/components/map-section"
 import { Footer } from "@/components/footer"
 
+export const dynamic = "force-dynamic"
+
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">

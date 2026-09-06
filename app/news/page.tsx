@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TablePagination } from "@/components/table-pagination"
 import { useAdmin } from "@/hooks/use-admin"
-import { Plus, Pencil, Trash2, X } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Upload, FileText } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { formatDateDot, isNewDate, getTodayDenver } from "@/lib/date"
 
@@ -16,12 +17,19 @@ type Announcement = {
   details: string[]
 }
 
+type BulletinImage = {
+  url: string
+  type: "image" | "pdf"
+  name: string
+}
+
 type ChurchNews = {
   id: number
   title: string
   date: string
   announcements: Announcement[] | string[]
   bible_reading: string | null
+  bulletin_images?: BulletinImage[]
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
@@ -33,6 +41,12 @@ function normalizeAnnouncements(raw: Announcement[] | string[] | string): Announ
   )
 }
 
+function normalizeBulletins(raw: BulletinImage[] | string | undefined | null): BulletinImage[] {
+  if (!raw) return []
+  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
+  return Array.isArray(parsed) ? parsed : []
+}
+
 function ChurchNewsFormModal({ item, onClose, onSaved }: { item?: ChurchNews | null; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState({
     title: item?.title || "",
@@ -42,7 +56,35 @@ function ChurchNewsFormModal({ item, onClose, onSaved }: { item?: ChurchNews | n
   const [announcements, setAnnouncements] = useState<Announcement[]>(
     item?.announcements ? normalizeAnnouncements(item.announcements) : [{ text: "", details: [] }]
   )
+  const [bulletinImages, setBulletinImages] = useState<BulletinImage[]>(
+    normalizeBulletins(item?.bulletin_images)
+  )
+  const [uploading, setUploading] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  const uploadBulletins = async (files: FileList | File[]) => {
+    setUploading(true)
+    const added: BulletinImage[] = []
+    for (const file of Array.from(files)) {
+      const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+      const formData = new FormData()
+      formData.append("file", file)
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (res.ok) {
+        const data = await res.json()
+        added.push({ url: data.url, type: isPdf ? "pdf" : "image", name: file.name })
+      }
+    }
+    setBulletinImages((prev) => [...prev, ...added])
+    setUploading(false)
+  }
+
+  const handleBulletinDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragActive(false)
+    if (e.dataTransfer.files) uploadBulletins(e.dataTransfer.files)
+  }
 
   const addAnnouncement = () => setAnnouncements([...announcements, { text: "", details: [] }])
   const removeAnnouncement = (idx: number) => setAnnouncements(announcements.filter((_, i) => i !== idx))
@@ -76,7 +118,7 @@ function ChurchNewsFormModal({ item, onClose, onSaved }: { item?: ChurchNews | n
     const filtered = announcements
       .filter((a) => a.text.trim())
       .map((a) => ({ text: a.text.trim(), details: a.details.filter((d) => d.trim()) }))
-    const payload = { ...form, announcements: filtered }
+    const payload = { ...form, announcements: filtered, bulletin_images: bulletinImages }
 
     if (item) {
       await fetch(`/api/church-news/${item.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
@@ -114,6 +156,50 @@ function ChurchNewsFormModal({ item, onClose, onSaved }: { item?: ChurchNews | n
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[80px]"
               placeholder={"월: 민 1-2장\n화: 민 3-4장\n수: 민 5-6장\n목: 민 7장\n금: 민 8-9장\n토: 민 10-11장"}
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">{"주보 (이미지 또는 PDF)"}</label>
+            <div
+              className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${dragActive ? "border-primary bg-primary/5" : "border-border"}`}
+              onDragOver={(e) => { e.preventDefault(); setDragActive(true) }}
+              onDragLeave={() => setDragActive(false)}
+              onDrop={handleBulletinDrop}
+            >
+              <Upload className="h-7 w-7 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground mb-2">{"주보 파일을 끌어놓거나"}</p>
+              <label className="cursor-pointer">
+                <Button type="button" size="sm" variant="outline" asChild>
+                  <span>{"파일 선택"}</span>
+                </Button>
+                <input type="file" className="hidden" multiple accept="image/*,application/pdf" onChange={(e) => e.target.files && uploadBulletins(e.target.files)} />
+              </label>
+              {uploading && <p className="text-sm text-primary mt-2">{"업로드 중..."}</p>}
+            </div>
+
+            {bulletinImages.length > 0 && (
+              <div className="grid grid-cols-4 gap-2 mt-3">
+                {bulletinImages.map((b, i) => (
+                  <div key={b.url} className="relative group aspect-[3/4] rounded-lg overflow-hidden border border-border bg-muted">
+                    {b.type === "image" ? (
+                      <Image src={b.url} alt={b.name} fill className="object-cover" />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full p-2 text-center">
+                        <FileText className="h-8 w-8 text-primary mb-1" />
+                        <span className="text-[10px] text-muted-foreground break-all line-clamp-2">{b.name}</span>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setBulletinImages(bulletinImages.filter((_, idx) => idx !== i))}
+                      className="absolute top-1 right-1 bg-background/80 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3.5 w-3.5 text-destructive" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
