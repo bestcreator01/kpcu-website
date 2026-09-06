@@ -48,14 +48,23 @@ export default function LocationPage() {
             <Clock className="h-5 w-5 text-primary" />
             예배 시간
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-muted-foreground">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-muted-foreground">
             <div>
-              <p className="font-medium text-foreground mb-1">주일 예배</p>
-              <p>1부: 오전 9:00 / 2부: 오전 11:00</p>
+              <p className="font-medium text-foreground mb-2">주일 예배</p>
+              <ul className="space-y-1.5">
+                <li className="flex justify-between gap-4"><span>주일 예배 (1부)</span><span className="text-primary font-medium">오전 9:00</span></li>
+                <li className="flex justify-between gap-4"><span>주일 예배 (2부)</span><span className="text-primary font-medium">오전 11:00</span></li>
+                <li className="flex justify-between gap-4"><span>Youth &amp; EM 예배</span><span className="text-primary font-medium">오전 11:00</span></li>
+                <li className="flex justify-between gap-4"><span>주일학교</span><span className="text-primary font-medium">오전 11:00</span></li>
+              </ul>
             </div>
             <div>
-              <p className="font-medium text-foreground mb-1">새벽기도회</p>
-              <p>화~금 5:30am</p>
+              <p className="font-medium text-foreground mb-2">주중 모임</p>
+              <ul className="space-y-1.5">
+                <li className="flex justify-between gap-4"><span>새벽기도회</span><span className="text-primary font-medium">화~금 5:30am</span></li>
+                <li className="flex justify-between gap-4"><span>토요 새벽기도회</span><span className="text-primary font-medium text-right">첫째, 셋째 토 7:00am</span></li>
+                <li className="flex justify-between gap-4"><span>청년, 대학부 예배</span><span className="text-primary font-medium">금요일 7:00pm</span></li>
+              </ul>
             </div>
           </div>
         </div>

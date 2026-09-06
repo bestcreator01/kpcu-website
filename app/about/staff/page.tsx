@@ -19,9 +19,9 @@ const pastors = [
 ]
 
 const elders = [
-  { name: "원광식", title: "시무 장로" },
-  { name: "박철희", title: "시무 장로" },
-  { name: "정경조", title: "시무 장로" },
+  { name: "원광식", title: "시무 장로", image: "/images/elder-won.jpg" },
+  { name: "박철희", title: "시무 장로", image: "/images/elder-park.jpg" },
+  { name: "정경조", title: "시무 장로", image: "/images/elder-jung.jpg" },
 ]
 
 export default function StaffPage() {
@@ -64,19 +64,22 @@ export default function StaffPage() {
           <h3 className="text-xl font-bold text-foreground mb-6 pb-2 border-b border-border">
             시무 장로
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {elders.map((elder) => (
               <Card key={elder.name}>
-                <CardContent className="p-5 text-center">
-                  <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-primary font-bold text-lg">
-                      {elder.name.charAt(0)}
-                    </span>
+                <CardContent className="p-5">
+                  <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+                    <Image
+                      src={elder.image}
+                      alt={`${elder.name} ${elder.title}`}
+                      fill
+                      className="object-cover object-top"
+                    />
                   </div>
-                  <h4 className="font-semibold text-foreground">
-                    {elder.name}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">{elder.title}</p>
+                  <div className="text-center mt-4">
+                    <h4 className="text-lg font-bold text-foreground">{elder.name}</h4>
+                    <p className="text-sm text-primary font-medium">{elder.title}</p>
+                  </div>
                 </CardContent>
               </Card>
             ))}
